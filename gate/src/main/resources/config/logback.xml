@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false" scan="true">
+	<springProperty scope="context" name="spring.application.name" source="spring.application.name"
+					defaultValue="localhost.log"/>
+	<springProperty scope="context" name="server.port" source="server.port" defaultValue="0000"/>
+	<property resource="application-${spring.profile.active:-dev}.yml"/>
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+			<charset>UTF-8</charset> <!-- 设置字符集 -->
+		</encoder>
+	</appender>
+
+	<appender name="defaultAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>../data/opt/servicelog/${spring.application.name}_${server.port}/ennew.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/data/opt/servicelog/${spring.application.name}_${server.port}/ennew.log-%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+			<charset>UTF-8</charset> <!-- 设置字符集 -->
+		</encoder>
+	</appender>
+
+	<appender name="tracingAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>../data/opt/servicelog/${spring.application.name}_${server.port}/enn-trace.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/data/opt/servicelog/${spring.application.name}_${server.port}/enn-trace-%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+
+		<!--<layout class="cn.enn.ygego.sunny.core.log.SearchablePatternLayout">
+			<pattern>%d %app %ip %z %uid %rid %-5level [%thread] %res - %msg%n</pattern>
+		</layout>-->
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+			<charset>UTF-8</charset> <!-- 设置字符集 -->
+		</encoder>
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="consoleAppender"/>
+		<appender-ref ref="defaultAppender"/>
+	</root>
+	<logger name="tracing" additivity="false" level="info">
+		<appender-ref ref="tracingAppender"/>
+	</logger>
+	<logger name="generic" additivity="false" level="info">
+		<appender-ref ref="tracingAppender"/>
+	</logger>
+	<logger name="costing" additivity="false" level="info">
+		<appender-ref ref="tracingAppender"/>
+	</logger>
+
+
+</configuration>
